@@ -1,6 +1,8 @@
 #ifndef _JSON_H
 #define _JSON_H
 
+#include "JSONObj.h"
+
 class JSON
 {
 private:

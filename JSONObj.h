@@ -4,12 +4,7 @@
 #include <vector>
 #include <string>
 
-struct Pair
-{
-    std::string key, value;
-
-    Pair(std::string _key, std::string _value) : key(_key), value(_value) {}
-};
+#include "Pair.h"
 
 class JSONObj
 {
@@ -18,7 +13,12 @@ private:
 
 public:
     void search(std::istream& iss);
-    void print();
+    std::ostream& print(std::ostream& stream);
+
+    friend std::ostream& operator << (std::ostream& stream, JSONObj& node)
+    {
+        return node.print(stream);
+    }
 };
 
 #endif
