@@ -1,0 +1,15 @@
+{
+	"string": "Test",
+	"int": 19,
+	"double": 13.5,
+	"Objects": {
+		"computer": {
+			"type": "Asus",
+			"CPU": "Intel core i7"
+		},
+		"phone": {
+			"type": "Huawei",
+			"number": "0927482938"
+		}
+	}
+}
