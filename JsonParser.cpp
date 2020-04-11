@@ -3,7 +3,41 @@
 #include <string>
 #include <iostream>
 
-#include "JsonParser.h"
+#include "JSONParser.h"
+
+JSON::JSON() : jsonFA(12, 128), stringFA(2, 128), root(jsonFA, stringFA)
+{
+    jsonFA.addTransition(1, 2, '{');
+    jsonFA.addTransition(1, 1, ' ');
+    jsonFA.addTransition(1, 1, '\n');
+
+    jsonFA.addTransition(2, 6, '}');
+    jsonFA.addTransition(2, 3, '\"');
+    jsonFA.addTransition(2, 2, ' ');
+    jsonFA.addTransition(2, 2, '\n');
+
+    jsonFA.addTransition(3, 4, '\"');
+
+    jsonFA.addTransition(4, 5, ':');
+    jsonFA.addTransition(4, 4, ' ');
+    jsonFA.addTransition(4, 4, '\n');
+
+    jsonFA.addTransition(5, 8, '\"');
+    jsonFA.addTransition(5, 9, '{');
+    jsonFA.addTransition(5, 6, '}');
+    jsonFA.addTransition(5, 2, ',');
+    jsonFA.addTransition(5, 5, ' ');
+    jsonFA.addTransition(5, 5, '\n');
+    for(int i=0; i<=9; i++) jsonFA.addTransition(5, 10, i + '0');
+
+    jsonFA.addTransition(8, 5, '\"');
+
+    jsonFA.addTransition(9, 5, '}');
+
+    stringFA.addTransition(0, 2, '\"');
+    stringFA.addTransition(0, 1, '\\');
+
+}
 
 void JSON::read(const char *path)
 {
