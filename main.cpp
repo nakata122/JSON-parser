@@ -27,6 +27,10 @@ int main()
         {
             file.print();
         }
+        else if(command.compare("search") == 0)
+        {
+            file.search();
+        }
         else if(command.compare("save") == 0)
         {
             

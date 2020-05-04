@@ -2,15 +2,16 @@
 #define _Pair_H
 
 #include <string>
+#include <vector>
 
-class Pair
+struct Pair
 {
-protected:
     std::string key;
-public:
-    Pair(std::string _key) : key(_key) {}
-    virtual ~Pair() {}
-    virtual std::ostream& print(std::ostream& stream) const { return stream << key << ": {}";}
+
+    Pair(const std::string &_key) : key(_key) {}
+    virtual std::ostream& print(std::ostream& stream) const = 0;
+    virtual bool findNext(const std::string &key, std::vector<int> &path) = 0;
+    virtual Pair *get(std::vector<int> &path) = 0;
 
     
     friend std::ostream& operator << (std::ostream& stream, const Pair& pair)
@@ -23,12 +24,24 @@ template< typename T >
 class TypedPair : public Pair
 {
 private:
-    T *data;
+    T data;
 public:
-    TypedPair (const std::string key, T *_data) : Pair(key), data(_data) {} 
-    ~TypedPair() { delete data; }
-    virtual std::ostream& print(std::ostream& stream) const { stream << key << " : " << *data; return stream;}
-    T& getData() { return data; }
+    TypedPair (const std::string &key, const T &_data) : Pair(key), data(_data) {};
+    virtual std::ostream& print(std::ostream& stream) const { return stream << key << " : " << data; }
+    virtual bool findNext(const std::string &key, std::vector<int> &path) { return false; }
+    virtual Pair *get(std::vector<int> &path) { return nullptr; }
 };
 
+class JSONObj;
+class NodePair : public Pair
+{
+private:
+    JSONObj *data;
+public:
+    NodePair (const std::string &key, JSONObj *_data) : Pair(key), data(_data) {};
+    ~NodePair();
+    virtual std::ostream& print(std::ostream& stream) const;
+    virtual bool findNext(const std::string &key, std::vector<int> &path);
+    virtual Pair *get(std::vector<int> &path);
+};
 #endif

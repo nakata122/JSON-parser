@@ -1,13 +1,12 @@
 #ifndef _JSON_H
 #define _JSON_H
 
-#include "FiniteAutomata.h"
 #include "JSONObj.h"
 
 class JSON
 {
 private:
-    FiniteAutomata jsonFA, stringFA;
+    bool valid = true;
     JSONObj root;
 
 public:
@@ -17,6 +16,7 @@ public:
     void parse(std::ifstream& iss);
     bool validate();
     void print();
+    void search();
     std::string search(std::string key);
     void help();
 };
