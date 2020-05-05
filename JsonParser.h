@@ -16,8 +16,9 @@ public:
     void parse(std::ifstream& iss);
     bool validate();
     void print();
-    void search();
-    std::string search(std::string key);
+    void search(std::string &key);
+    void edit(std::string &path, std::string &value);
+    void erase(std::string &path);
     void help();
 };
 

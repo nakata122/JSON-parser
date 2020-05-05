@@ -29,7 +29,25 @@ int main()
         }
         else if(command.compare("search") == 0)
         {
-            file.search();
+            std::string key;
+            std::cin >> key;
+
+            file.search(key);
+        }
+        else if(command.compare("set") == 0)
+        {
+            std::string path, value;
+            std::cin >> path;
+            getline(std::cin, value);
+            
+            file.edit(path, value);
+        }
+        else if(command.compare("delete") == 0)
+        {
+            std::string path;
+            std::cin >> path;
+
+            file.erase(path);
         }
         else if(command.compare("save") == 0)
         {

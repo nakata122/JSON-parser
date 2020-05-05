@@ -14,16 +14,21 @@ private:
     JsonFA FiniteAutomata;
     int depth;
 
-    std::string getString(std::istream& iss);
+    std::string parseString(std::istream& iss);
 public:
     JSONObj(int _depth = 0);
     JSONObj(const JSONObj &obj);
     ~JSONObj();
-    bool search(std::istream& iss);
+    bool search(std::istream &iss);
+    Pair *parseValue(std::istream &iss, const std::string &key);
     std::ostream& print(std::ostream& stream) const;
     bool findNext(const std::string &key, std::vector<int> &path);
+    bool find(const std::string &key, std::vector<int> &path);
+    bool erase(const int index);
+    bool edit(Pair *obj, int index);
 
-    Pair *get(std::vector<int> &path);
+    Pair *get(std::vector<int> &path); //Get pointer to the child
+    JSONObj *getObj(std::vector<int> &path); //Get pointer to the object
     
 
     friend std::ostream& operator << (std::ostream& stream, JSONObj& node);

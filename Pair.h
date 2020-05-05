@@ -4,14 +4,14 @@
 #include <string>
 #include <vector>
 
+class JSONObj;
 struct Pair
 {
     std::string key;
 
     Pair(const std::string &_key) : key(_key) {}
     virtual std::ostream& print(std::ostream& stream) const = 0;
-    virtual bool findNext(const std::string &key, std::vector<int> &path) = 0;
-    virtual Pair *get(std::vector<int> &path) = 0;
+    virtual JSONObj *getObject() = 0;
 
     
     friend std::ostream& operator << (std::ostream& stream, const Pair& pair)
@@ -27,12 +27,10 @@ private:
     T data;
 public:
     TypedPair (const std::string &key, const T &_data) : Pair(key), data(_data) {};
-    virtual std::ostream& print(std::ostream& stream) const { return stream << key << " : " << data; }
-    virtual bool findNext(const std::string &key, std::vector<int> &path) { return false; }
-    virtual Pair *get(std::vector<int> &path) { return nullptr; }
+    virtual std::ostream& print(std::ostream& stream) const { return stream << std::boolalpha << key << " : " << data; } //boolalpha is to print bool as true or false
+    virtual JSONObj *getObject() { return nullptr; }
 };
 
-class JSONObj;
 class NodePair : public Pair
 {
 private:
@@ -41,7 +39,6 @@ public:
     NodePair (const std::string &key, JSONObj *_data) : Pair(key), data(_data) {};
     ~NodePair();
     virtual std::ostream& print(std::ostream& stream) const;
-    virtual bool findNext(const std::string &key, std::vector<int> &path);
-    virtual Pair *get(std::vector<int> &path);
+    virtual JSONObj *getObject();
 };
 #endif

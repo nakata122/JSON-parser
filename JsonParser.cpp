@@ -1,4 +1,5 @@
 #include <fstream>
+#include <sstream>
 #include <cstring>
 #include <string>
 #include <iostream>
@@ -28,16 +29,55 @@ void JSON::read(const char *path)
     }
 }
 
-void JSON::search()
+void JSON::search(std::string &key)
 {
-    std::string key;
-    std::cin >> key;
 
     std::vector<int> path;
     while(root.findNext(key, path))
     {
         std::cout << *root.get(path) << std::endl;
         path.back()++;
+    }
+}
+
+void JSON::edit(std::string &path, std::string &value)
+{
+    Pair *obj;
+
+    std::vector<int> rawPath;
+    
+    if(root.find(path, rawPath))
+    {
+        std::stringstream iss(value);
+        iss >> std::ws;
+        obj = root.parseValue(iss, root.get(rawPath)->key);
+        int lastIndex = rawPath.back();
+
+        JSONObj *parent = root.getObj(rawPath);
+
+        if(parent != nullptr)
+        {
+            parent->edit(obj, lastIndex);
+        }
+    }
+    else
+    {
+        std::cout << "Path not found" << std::endl;
+    }
+}
+
+void JSON::erase(std::string &path)
+{
+
+    std::vector<int> rawPath;
+    while(root.find(path, rawPath))
+    {
+        JSONObj *parent = root.getObj(rawPath);
+
+        if(parent != nullptr)
+        {
+            parent->erase(rawPath.back());
+        }
     }
 }
 

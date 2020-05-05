@@ -15,12 +15,8 @@ NodePair::~NodePair()
     delete data;
 }
 
-bool NodePair::findNext(const std::string &key, std::vector<int> &path)
-{
-    return data->findNext(key, path);
-}
 
-Pair *NodePair::get(std::vector<int> &path)
+JSONObj *NodePair::getObject()
 {
-    return data->get(path);
+    return data;
 }
