@@ -1,5 +1,5 @@
 { 
-   "string" : "New bigger string", 
+   "string" : "Test", 
    "int" : 19, 
    "double" : 13.5, 
    "Objects" : { 

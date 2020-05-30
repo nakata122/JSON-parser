@@ -40,6 +40,7 @@
         "xutility": "cpp",
         "cctype": "cpp",
         "concepts": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "algorithm": "cpp"
     }
 }

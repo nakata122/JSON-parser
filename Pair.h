@@ -1,17 +1,22 @@
-#ifndef _Pair_H
-#define _Pair_H
+#ifndef _PAIR_H
+#define _PAIR_H
 
 #include <string>
-#include <vector>
 
-class JSONObj;
+///Represents an abstract class holding a key value pairs
 struct Pair
 {
     std::string key;
 
-    Pair(const std::string &_key) : key(_key) {}
+    Pair(const std::string &_key) : key(_key) {};
+    virtual ~Pair() {};
     virtual std::ostream& print(std::ostream& stream) const = 0;
-    virtual JSONObj *getObject() = 0;
+    virtual void printAll(const std::string &_key) const = 0;
+    virtual bool edit(const std::string &path, Pair *obj) = 0;
+    virtual bool erase(const std::string &path) = 0;
+    virtual bool create(const std::string &path, Pair *obj) = 0;
+    virtual Pair *cutContent(const std::string &path) = 0;
+    virtual void save(const std::string &path, std::ostream& stream) = 0;
 
     
     friend std::ostream& operator << (std::ostream& stream, const Pair& pair)
@@ -20,25 +25,20 @@ struct Pair
     }
 };
 
+///Template class for all generic types
 template< typename T >
 class TypedPair : public Pair
 {
 private:
     T data;
 public:
-    TypedPair (const std::string &key, const T &_data) : Pair(key), data(_data) {};
-    virtual std::ostream& print(std::ostream& stream) const { return stream << std::boolalpha << key << " : " << data; } //boolalpha is to print bool as true or false
-    virtual JSONObj *getObject() { return nullptr; }
-};
-
-class NodePair : public Pair
-{
-private:
-    JSONObj *data;
-public:
-    NodePair (const std::string &key, JSONObj *_data) : Pair(key), data(_data) {};
-    ~NodePair();
+    TypedPair (const std::string &key, const T &_data);
     virtual std::ostream& print(std::ostream& stream) const;
-    virtual JSONObj *getObject();
+    virtual void printAll(const std::string &_key) const;
+    virtual bool edit(const std::string &path, Pair *obj);
+    virtual bool erase(const std::string &path);
+    virtual bool create(const std::string &path, Pair *obj);
+    virtual Pair *cutContent(const std::string &path);
+    virtual void save(const std::string &path, std::ostream& stream);
 };
 #endif

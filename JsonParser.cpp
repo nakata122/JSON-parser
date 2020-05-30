@@ -1,83 +1,107 @@
 #include <fstream>
 #include <sstream>
-#include <cstring>
-#include <string>
 #include <iostream>
+#include <algorithm>
 
 #include "Pair.h"
 #include "JsonFA.h"
 #include "JSONParser.h"
+#include "PairFactory.h"
 
-JSON::JSON() : root(0) 
+JSON::JSON() : root("", 0) 
 {
     JsonFA::init();
 }
 
-void JSON::read(const char *path)
+void JSON::read(const std::string &path)
 {
     std::ifstream file;
     file.open(path, std::ios::in);
     if (file.is_open())
     {
         valid = root.search(file);
+        fileName = path;
         
         file.close();
+
+        std::cout << "File successfully opened \n";
     }
     else
     {
-        std::cout << "File not found" << std::endl;
+        std::cerr << "File not found \n";
     }
 }
 
 void JSON::search(std::string &key)
 {
-
-    std::vector<int> path;
-    while(root.findNext(key, path))
-    {
-        std::cout << *root.get(path) << std::endl;
-        path.back()++;
-    }
+    root.printAll(key);
 }
 
 void JSON::edit(std::string &path, std::string &value)
 {
-    Pair *obj;
+    int end = path.find_last_of('.'), depth = std::count(path.begin(), path.end(), '.') + 1;
+    if(end == std::string::npos) end = -1;
 
-    std::vector<int> rawPath;
-    
-    if(root.find(path, rawPath))
+    std::stringstream iss(value);
+    iss >> std::ws;
+    Pair *obj = PairFactory::make(iss, path.substr(end + 1), depth);
+
+    if(obj != nullptr && root.edit(path, obj))
     {
-        std::stringstream iss(value);
-        iss >> std::ws;
-        obj = root.parseValue(iss, root.get(rawPath)->key);
-        int lastIndex = rawPath.back();
-
-        JSONObj *parent = root.getObj(rawPath);
-
-        if(parent != nullptr)
-        {
-            parent->edit(obj, lastIndex);
-        }
+        std::cout << "Successfully set \n";
     }
     else
     {
-        std::cout << "Path not found" << std::endl;
+        std::cerr << "Path not found \n";
+    }
+}
+
+void JSON::create(std::string &path, std::string &value)
+{
+    int end = path.find_last_of('.'), depth = std::count(path.begin(), path.end(), '.') + 1;
+    if(end == std::string::npos) end = -1;
+
+    std::stringstream iss(value);
+    iss >> std::ws;
+    Pair *obj = PairFactory::make(iss, path.substr(end + 1), depth);
+
+    if(obj != nullptr && root.create(path, obj))
+    {
+        std::cout << "Successfully created \n";
+    }
+    else
+    {
+        std::cerr << "Path already exists \n";
     }
 }
 
 void JSON::erase(std::string &path)
 {
-
-    std::vector<int> rawPath;
-    while(root.find(path, rawPath))
+    if(root.erase(path))
     {
-        JSONObj *parent = root.getObj(rawPath);
+        std::cout << "Successfully erased \n";
+    }
+    else
+    {
+        std::cerr << "Path not found \n";
+    }
+}
 
-        if(parent != nullptr)
-        {
-            parent->erase(rawPath.back());
-        }
+void JSON::move(std::string &from, std::string &to)
+{
+    int end = to.find_last_of('.');
+    if(end == std::string::npos) end = -1;
+
+    Pair *fromPair = root.cutContent(from);
+    fromPair->key = to.substr(end + 1);
+
+    if(fromPair != nullptr && root.edit(to, fromPair))
+    {
+        std::cout << "Successfully moved \n";
+    }
+    else
+    {
+        std::cerr << "Wrong path \n";
     }
 }
 
@@ -88,12 +112,51 @@ void JSON::print()
 
 void JSON::close()
 {
-    
+    root.clear();
+    valid = false;
 }
 
 bool JSON::validate() 
 {
-    return true;
+    return valid;
+}
+
+void JSON::save(std::string &path)
+{
+    std::ofstream file;
+    file.open(fileName);
+
+    if (file.is_open())
+    {
+        root.save(path, file);
+        
+        file.close();
+
+        std::cout << "File successfully saved \n";
+    }
+    else
+    {
+        std::cerr << "File could not be saved \n";
+    }
+}
+
+void JSON::saveAs(std::string &fileLocation, std::string &path)
+{
+    std::ofstream file;
+    file.open(fileLocation);
+
+    if (file.is_open())
+    {
+        root.save(path, file);
+        
+        file.close();
+
+        std::cout << "File successfully saved \n";
+    }
+    else
+    {
+        std::cerr << "File could not be saved \n";
+    }
 }
 
 void JSON::help()
