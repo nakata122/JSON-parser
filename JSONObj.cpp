@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 #include <cstring>
 #include <sstream>
 
@@ -28,6 +29,15 @@ void JSONObj::clear()
     children.clear();
 };
 
+void JSONObj::sortChildren()
+{
+    std::sort(children.begin(), children.end(), [](Pair *a, Pair *b)->bool 
+    { 
+        if(a == nullptr || b == nullptr) return false;
+        return a->key < b->key; 
+    });
+}
+
 
 bool JSONObj::search(std::istream& iss)
 {
@@ -47,7 +57,7 @@ bool JSONObj::search(std::istream& iss)
         {
             if(iss.get() != '"') 
             {
-                std::cout << "String expected for key at " << iss.tellg() << std::endl;
+                std::cerr << "String expected for key at " << iss.tellg() << std::endl;
                 return false;
             }
 
@@ -55,7 +65,7 @@ bool JSONObj::search(std::istream& iss)
 
             if(_key.empty()) 
             {
-                std::cout << "Key cannot be empty" << std::endl;
+                std::cerr << "Key cannot be empty" << std::endl;
                 return false;
             }
         }
@@ -70,6 +80,7 @@ bool JSONObj::search(std::istream& iss)
         while(iss.peek() == ' ' || iss.peek() == '\n' || iss.peek() == '\t' || iss.peek() == '\r') iss.get();
     }
     
+    sortChildren();
     return FiniteAutomata.isValid();
 }
 
@@ -88,7 +99,7 @@ std::ostream& JSONObj::print(std::ostream& stream) const
         stream << std::endl;
     }
     for(int j=0; j<depth; j++) stream << "   ";
-    if(isArray) stream << "] \n";
+    if(isArray) stream << "]";
     else stream << "}";
     return stream;
 }
@@ -104,10 +115,23 @@ std::string JSONObj::splitPath(const std::string &path)
 
 int JSONObj::find(const std::string &_key) const
 {
-    for(int i = 0; i < children.size(); i++)
-    {
-        if(children[i]->key == _key) return i;
-    }
+    //*************COPIED CODE******************
+    int left = 0, right = children.size() - 1;
+    while (left <= right) { 
+        int middle = left + (right - left) / 2; 
+  
+        if (children[middle]->key == _key) 
+            return middle; 
+        if (children[middle]->key < _key) 
+            left = middle + 1;
+        else
+            right = middle - 1;
+    } 
+    //*************COPIED CODE******************
+    // for(int i = 0; i < children.size(); i++)
+    // {
+    //     if(children[i]->key == _key) return i;
+    // }
     return -1;
 }
 
@@ -140,11 +164,13 @@ bool JSONObj::create(const std::string &path, Pair *obj)
         {
             JSONObj *temp = new JSONObj(part, depth + 1);
             children.push_back(temp);
+            sortChildren();
             return temp->create(path.substr(part.size() + 1), obj);
         }
         else 
         {
             children.push_back(obj);
+            sortChildren();
             return true;
         }
     }
@@ -211,6 +237,7 @@ bool JSONObj::edit(const std::string &path, Pair *obj)
         {
             delete children[index];
             children[index] = obj;
+            sortChildren();
             return true;
         }
     }

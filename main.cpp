@@ -88,12 +88,12 @@ int main()
         else if(command.compare("help") == 0)
         {
             std::cout << "The following commands are supported: \n"
-                      << "open <file>	opens <file> \n"
-                      << "close			closes currently opened file \n"
-                      << "save			saves the currently open file \n"
-                      << "saveas <file>	saves the currently open file in <file> \n"
-                      << "help			prints this information \n" 
-                      << "exit			exists the program \n";
+                      << "open <file>           opens <file> \n"
+                      << "close                 closes currently opened file \n"
+                      << "save [path]           saves the current json object with opetional path to the opened file \n"
+                      << "saveas [path] <file>  saves the current json object with opetional path in <file> \n"
+                      << "help                  prints this information \n" 
+                      << "exit                  exists the program \n";
             
             file.help();
         }

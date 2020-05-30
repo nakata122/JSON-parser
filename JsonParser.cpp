@@ -161,11 +161,11 @@ void JSON::saveAs(std::string &fileLocation, std::string &path)
 
 void JSON::help()
 {
-    std::cout << "validate	            checks if file is JSON \n"
-              << "print			        prints JSON \n"
-              << "search <key>      	returns a list of data associated with the key \n"
-              << "set <key> <string>	changes value of key in the object \n"
+    std::cout << "validate              checks if file is JSON \n"
+              << "print                 prints JSON \n"
+              << "search <key>          returns a list of data associated with the key \n"
+              << "set <key> <string>    changes value of key in the object \n"
               << "create <path> <string>creates a new key value pair \n" 
-              << "delete <path>			deletes the object \n"
-              << "move <from> <to>		moves object \n";
+              << "delete <path>         deletes the object \n"
+              << "move <from> <to>      moves object \n";
 }

@@ -17,6 +17,7 @@ private:
     bool isArray;
 
     std::string splitPath(const std::string &path); ///<Helper function to split a path into components
+    void sortChildren();
 public:
     JSONObj(const std::string &_key, int _depth = 0, bool _isArray = false); ///<Initialize object
     JSONObj(const JSONObj &obj);

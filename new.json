@@ -1,5 +1,5 @@
 { 
-   "string" : "Test", 
+   "string" : "New bigger string", 
    "int" : 19, 
    "double" : 13.5, 
    "Objects" : { 
@@ -18,5 +18,23 @@
          "last"
       ] 
 
+   }, 
+   "new" : { 
+      "Object" : { 
+         "something" : { 
+            "else" : { 
+                  "myObject" : "empty", 
+                  "another" : [ 
+                     1, 
+                     2, 
+                     3, 
+                     4, 
+                     5, 
+                     6
+                  ] 
+
+               }
+         }
+      }
    }
 }
