@@ -2,14 +2,16 @@
 
 #include "Pair.h"
 
-template class TypedPair<double>;
-template class TypedPair<std::string>;
-template class TypedPair<bool>;
-
 template< typename T >
 TypedPair<T>::TypedPair (const std::string &key, const T &_data) : Pair(key), data(_data) 
 {
 
+}
+
+template< typename T >
+Pair *TypedPair<T>::clone ()
+{
+    return new TypedPair(*this);
 }
 
 template< typename T >
@@ -59,3 +61,8 @@ void TypedPair<T>::save(const std::string &path, std::ostream& stream)
 {
     if(path.empty()) print(stream);
 }
+
+
+template class TypedPair<double>;
+template class TypedPair<std::string>;
+template class TypedPair<bool>;

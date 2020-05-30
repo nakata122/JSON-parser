@@ -10,6 +10,7 @@ struct Pair
 
     Pair(const std::string &_key) : key(_key) {};
     virtual ~Pair() {};
+    virtual Pair *clone() = 0; 
     virtual std::ostream& print(std::ostream& stream) const = 0;
     virtual void printAll(const std::string &_key) const = 0;
     virtual bool edit(const std::string &path, Pair *obj) = 0;
@@ -33,6 +34,7 @@ private:
     T data;
 public:
     TypedPair (const std::string &key, const T &_data);
+    virtual Pair *clone(); 
     virtual std::ostream& print(std::ostream& stream) const;
     virtual void printAll(const std::string &_key) const;
     virtual bool edit(const std::string &path, Pair *obj);

@@ -12,10 +12,30 @@ JSONObj::JSONObj(const std::string &_key, int _depth, bool _isArray) : Pair(_key
     
 }
 
-JSONObj::JSONObj(const JSONObj &obj): Pair(obj.key)
+JSONObj::JSONObj(const JSONObj &other): Pair(other.key), children(other.children.size())
 {
-    if(children.size() != 0) children.clear();
-    for(int i=0; i<obj.children.size(); i++) children.push_back(obj.children[i]);
+    for(Pair *pair : children) 
+    {
+        children.push_back(pair->clone());
+    }
+}
+
+JSONObj &JSONObj::operator =(const JSONObj &other)
+{
+    if(this != &other)
+    {
+        if(!children.empty()) clear();
+        for(Pair *pair : children) 
+        {
+            children.push_back(pair->clone());
+        }
+    }
+    return *this;
+}
+
+Pair *JSONObj::clone()
+{
+    return new JSONObj(*this);
 }
 
 JSONObj::~JSONObj() 
@@ -25,7 +45,7 @@ JSONObj::~JSONObj()
 
 void JSONObj::clear() 
 {
-    for(int i=0; i<children.size(); i++) delete children[i];
+    for(Pair *pair : children) delete pair;
     children.clear();
 };
 
@@ -139,9 +159,9 @@ void JSONObj::printAll(const std::string &_key) const
 {
     if(_key == key) std::cout << *this << std::endl;
 
-    for(int i=0; i < children.size(); i++)
+    for(Pair *pair : children)
     {
-        children[i]->printAll(_key);
+        pair->printAll(_key);
     }
 }
 

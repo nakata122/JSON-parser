@@ -20,7 +20,9 @@ private:
     void sortChildren();
 public:
     JSONObj(const std::string &_key, int _depth = 0, bool _isArray = false); ///<Initialize object
-    JSONObj(const JSONObj &obj);
+    JSONObj(const JSONObj &other); ///<Copy object
+    Pair *operator =(JSONObj *other); ///<Copy object
+    virtual Pair *clone();
     ~JSONObj();
     void clear(); ///<Clear memory
     bool search(std::istream &iss); ///<Read data from a stream and parse it
